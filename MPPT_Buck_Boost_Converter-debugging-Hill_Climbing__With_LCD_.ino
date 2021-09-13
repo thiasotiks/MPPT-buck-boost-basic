@@ -1,4 +1,11 @@
-/* Hill Climbing */
+/*
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MPPT Buck-Boost Charge Controller [Rev. 1]~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * 
+ * This code uses the popular "Hill Climbing" algorithm to track the maximum power point
+ * 
+ * This code is under MIT License
+ * Copyright (c) 2021 Sayantan Sinha
+*/
 
 #include <LiquidCrystal.h>
 
@@ -140,11 +147,13 @@ void loop()
 
 void dispData(const unsigned int __vpv, const unsigned int __ipv, const unsigned int __vb, const unsigned int __ib, const bool __ccMode, const bool __cvMode, const unsigned int __dMax)
 {
+  static bool ivData = true;
   lcd.clear();
   float pvVoltage = (float)__vpv / 35.80;
   float pvCurrent = (float)__ipv / 765.70;
   float baVoltage = (float)__vb / 44.75;
   float baCurrent = (float)__ib / 169.60;
+  if (ivData) {
   lcd.print(pvVoltage);
   lcd.print("V ");
   lcd.print(baVoltage);
@@ -154,6 +163,18 @@ void dispData(const unsigned int __vpv, const unsigned int __ipv, const unsigned
   lcd.print("A ");
   lcd.print(baCurrent);
   lcd.print(__ccMode ? "A*" : "A");
+  }
+  else {
+    lcd.print("PV ");
+    lcd.print(pvVoltage * pvCurrent);
+    lcd.print("W");
+    lcd.setCursor(0, 1);
+    lcd.print("LD ");
+    lcd.print(baVoltage * baCurrent);
+    lcd.print("W ");
+    lcd.print(((baVoltage * baCurrent) / (pvVoltage * pvCurrent)) * 100);                 // Efficiency
+    lcd.print("%");
+  }
 }
 
 unsigned int adcRead(byte ch)
