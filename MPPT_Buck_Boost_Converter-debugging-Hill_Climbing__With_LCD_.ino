@@ -175,6 +175,7 @@ void dispData(const unsigned int __vpv, const unsigned int __ipv, const unsigned
     lcd.print(((baVoltage * baCurrent) / (pvVoltage * pvCurrent)) * 100);                 // Efficiency
     lcd.print("%");
   }
+   ivData = !ivData;
 }
 
 unsigned int adcRead(byte ch)
